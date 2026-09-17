@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4F1EA">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Essence">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Essence</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --fond: #F4F1EA;
+    --surface: #FFFFFF;
+    --encre: #1C1B19;
+    --doux: #5C584F;
+    --ligne: #E8E3D8;
+    --piste: #EFEAE0;
+    --vert: #0F6B5C;
+    --vert-fonce: #0A4F44;
+    --vert-clair: #E3F0EC;
+    --pos: #1F6B3A;
+    --neg: #A23B2A;
+    --titre: 'Bricolage Grotesque', Georgia, serif;
+    --texte: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--fond); color: var(--encre); font-family: var(--texte); -webkit-tap-highlight-color: transparent; }
+  body { min-height: 100vh; }
+  button, input, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { opacity: .55; cursor: default; }
+  :focus-visible { outline: 3px solid var(--vert); outline-offset: 2px; }
+  h1, h2, h3 { margin: 0; }
+
+  .page { max-width: 560px; margin: 0 auto; padding: calc(20px + env(safe-area-inset-top)) 20px calc(110px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 16px; }
+  .entete { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+  .entete small { display: block; font-size: 13px; font-weight: 600; color: var(--doux); }
+  .grand-titre { font-family: var(--titre); font-size: 32px; font-weight: 700; letter-spacing: -.5px; }
+  .etiquette { font-size: 14px; font-weight: 700; color: var(--doux); }
+  .etiquette span { font-weight: 500; }
+  .muet { font-size: 13px; color: var(--doux); line-height: 1.45; }
+  .chiffre { font-variant-numeric: tabular-nums; }
+
+  .carte { background: var(--surface); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 2px rgba(28,27,25,.06); }
+  .carte-sombre { background: var(--encre); color: #fff; border-radius: 20px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .carte-sombre small { display: block; font-size: 13px; font-weight: 600; color: #CFC9BC; }
+  .carte-sombre strong { font-family: var(--titre); font-size: 26px; }
+  .separateur { height: 1px; background: var(--ligne); }
+  .ligne { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .ligne .nom { font-size: 17px; font-weight: 600; }
+  .ligne .montant { font-size: 20px; font-weight: 700; }
+  .pos { color: var(--pos); } .neg { color: var(--neg); } .neutre { color: var(--doux); }
+  .phrase { font-size: 16px; font-weight: 600; }
+
+  .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .gros { height: 64px; border-radius: 18px; font-size: 17px; font-weight: 700; border: 2px solid var(--encre); background: var(--surface); }
+  .gros.vert { background: var(--vert); border-color: var(--vert); color: #fff; }
+
+  .barres { display: flex; flex-direction: column; gap: 10px; }
+  .barre { display: grid; grid-template-columns: 72px 1fr 76px; align-items: center; gap: 10px; font-size: 15px; }
+  .barre .piste { height: 8px; border-radius: 4px; background: var(--piste); overflow: hidden; }
+  .barre .rempli { height: 100%; border-radius: 4px; background: var(--vert); }
+  .barre b { text-align: right; }
+  .barre span:first-child { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .seg { display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; gap: 4px; background: var(--ligne); border-radius: 14px; padding: 4px; }
+  .seg button { min-height: 42px; border: none; border-radius: 10px; background: transparent; color: var(--doux); font-size: 14px; font-weight: 600; padding: 0 6px; }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--encre); font-weight: 700; box-shadow: 0 1px 2px rgba(28,27,25,.08); }
+  .seg.petit { background: var(--fond); border-radius: 10px; padding: 3px; }
+  .seg.petit button { min-height: 30px; border-radius: 8px; font-size: 12px; }
+
+  .liste { display: flex; flex-direction: column; gap: 10px; }
+  .element { width: 100%; text-align: left; border: none; background: var(--surface); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 5px; box-shadow: 0 1px 2px rgba(28,27,25,.05); }
+  .element .haut { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .element .titre { font-size: 15px; font-weight: 700; }
+  .element .date { font-size: 13px; font-weight: 600; color: var(--doux); white-space: nowrap; }
+  .element .detail { font-size: 14px; color: #3D3A34; }
+  .soldes { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; font-weight: 700; }
+  .vide { text-align: center; padding: 28px 16px; color: var(--doux); font-size: 15px; line-height: 1.5; }
+  .bouton-ligne { border: 2px dashed #B8B1A2; background: transparent; border-radius: 16px; min-height: 52px; font-weight: 700; font-size: 15px; }
+  .section-titre { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .section-titre h2 { font-size: 18px; font-weight: 700; }
+  .lien { border: none; background: none; color: var(--vert); font-weight: 700; font-size: 15px; padding: 8px 0; min-height: 44px; }
+  .lien.danger { color: var(--neg); }
+
+  nav.barre-nav { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--ligne); padding: 6px 8px calc(8px + env(safe-area-inset-bottom)); z-index: 10; }
+  nav.barre-nav div { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  nav.barre-nav button { border: none; background: none; display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 54px; justify-content: center; font-size: 11px; font-weight: 600; color: var(--doux); }
+  nav.barre-nav button[aria-current="page"] { color: var(--vert); font-weight: 700; }
+
+  /* Feuilles (formulaires) */
+  .voile { position: fixed; inset: 0; background: rgba(28,27,25,.45); z-index: 20; animation: apparait .15s ease-out; }
+  .feuille { position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; max-height: 92vh; overflow-y: auto; background: var(--fond); border-radius: 24px 24px 0 0; padding: 10px 20px calc(20px + env(safe-area-inset-bottom)); animation: monte .2s ease-out; }
+  .feuille-interieur { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+  .poignee { width: 40px; height: 5px; border-radius: 3px; background: #CFC9BC; margin: 0 auto 4px; }
+  .feuille-entete { display: flex; justify-content: space-between; align-items: center; }
+  .feuille-entete h2 { font-family: var(--titre); font-size: 24px; font-weight: 700; }
+  .fermer { width: 44px; height: 44px; border-radius: 14px; border: none; background: var(--surface); display: flex; align-items: center; justify-content: center; }
+  @keyframes monte { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes apparait { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .voile, .feuille { animation: none; } }
+
+  .champ { display: flex; flex-direction: column; gap: 8px; }
+  .champ input, .champ select { height: 50px; border-radius: 14px; border: 2px solid transparent; background: var(--surface); padding: 0 14px; font-size: 16px; font-weight: 600; width: 100%; }
+  .champ input:focus, .champ select:focus { border-color: var(--vert); outline: none; }
+  .deux { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .montant-geant { background: var(--surface); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .montant-geant input { width: 100%; border: none; background: transparent; text-align: center; font-family: var(--titre); font-size: 48px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .montant-geant input:focus { outline: none; }
+  .puces { display: flex; flex-wrap: wrap; gap: 8px; }
+  .puce { min-height: 44px; padding: 0 18px; border-radius: 22px; border: 2px solid #D9D3C6; background: var(--surface); font-size: 15px; font-weight: 600; }
+  .puce[aria-pressed="true"] { border-color: var(--vert); background: var(--vert); color: #fff; font-weight: 700; }
+  .puce.sombre[aria-pressed="true"] { border-color: var(--encre); background: var(--encre); }
+  .puce small { font-size: 12px; font-weight: 600; opacity: .75; }
+  .tuiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tuile { min-height: 64px; border-radius: 16px; border: 2px solid transparent; background: var(--surface); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 8px 14px; gap: 2px; text-align: left; }
+  .tuile b { font-size: 16px; }
+  .tuile small { font-size: 12px; font-weight: 600; color: var(--doux); }
+  .tuile[aria-pressed="true"] { border-color: var(--vert); background: var(--vert-clair); }
+  .tuile.autre { border: 2px dashed #B8B1A2; background: transparent; align-items: center; font-weight: 700; }
+  .tuile.autre[aria-pressed="true"] { border-style: solid; border-color: var(--vert); background: var(--vert-clair); }
+  .apercu { background: var(--surface); border-radius: 16px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .apercu .calcul { font-size: 14px; font-weight: 600; color: var(--doux); }
+  .apercu .total { font-family: var(--titre); font-size: 24px; font-weight: 700; white-space: nowrap; }
+  .info { background: var(--vert-clair); border-radius: 14px; padding: 12px 14px; font-size: 13px; font-weight: 600; color: #1E4A41; line-height: 1.45; }
+  .valider { height: 58px; border-radius: 18px; border: none; background: var(--vert); color: #fff; font-size: 17px; font-weight: 700; width: 100%; }
+  .valider.sombre { background: var(--encre); }
+  .case { display: flex; align-items: center; gap: 12px; min-height: 48px; font-weight: 600; }
+  .case input { width: 22px; height: 22px; accent-color: var(--vert); }
+
+  /* Écrans d'accueil (PIN, choix du téléphone) */
+  .ecran { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 24px; max-width: 420px; margin: 0 auto; gap: 20px; }
+  .ecran p { margin: 0; }
+  .pin { height: 64px; border-radius: 18px; border: 2px solid transparent; background: var(--surface); text-align: center; font-size: 28px; letter-spacing: 8px; font-weight: 700; width: 100%; }
+  .pin:focus { outline: none; border-color: var(--vert); }
+  .erreur { color: var(--neg); font-weight: 600; font-size: 14px; min-height: 20px; }
+  .centre { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .rond { width: 36px; height: 36px; border-radius: 50%; border: 4px solid var(--ligne); border-top-color: var(--vert); animation: tourne 1s linear infinite; }
+  @keyframes tourne { to { transform: rotate(360deg); } }
+
+  #toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--encre); color: #fff; padding: 12px 18px; border-radius: 14px; font-size: 14px; font-weight: 600; z-index: 40; max-width: calc(100% - 40px); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  #toast.visible { opacity: 1; }
+</style>
+<script src="config.js"></script>
+</head>
+<body>
+<div id="app"></div>
+<div id="feuille"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* =====================================================================
+   CONFIGURATION ET OUTILS
+   ===================================================================== */
+
+const CFG = window.ESSENCE_CONFIG || {};
+const CLE_TOKEN = 'essence_token';
+const CLE_MOI = 'essence_moi';
+const EPS = 0.005;             // en dessous d'un demi-centime = 0
+const RAFRAICHIR_MS = 20000;   // synchronisation toutes les 20 s
+
+const S = {
+  data: null,        // données reçues de Supabase
+  calc: null,        // soldes, dettes, chronologie calculés
+  signature: '',     // pour éviter de redessiner si rien n'a changé
+  onglet: 'accueil',
+  sous: 'chrono',
+  kmPeriode: 'mois',
+  form: null,        // formulaire ouvert
+  busy: false,
+  erreurPin: ''
+};
+
+const fmtEur = new Intl.NumberFormat('fr-BE', { style: 'currency', currency: 'EUR' });
+const fmtKm = new Intl.NumberFormat('fr-BE', { maximumFractionDigits: 1 });
+const fmtCoutKm = new Intl.NumberFormat('fr-BE', { minimumFractionDigits: 3, maximumFractionDigits: 4 });
+const fmtPrix = new Intl.NumberFormat('fr-BE', { minimumFractionDigits: 2, maximumFractionDigits: 3 });
+const fmtConso = new Intl.NumberFormat('fr-BE', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function eur(v) { return fmtEur.format(Math.abs(v) < EPS ? 0 : v); }
+function signe(v) {
+  if (Math.abs(v) < EPS) return fmtEur.format(0);
+  return (v > 0 ? '+' : '−') + fmtEur.format(Math.abs(v));
+}
+function classe(v) { return Math.abs(v) < EPS ? 'neutre' : v > 0 ? 'pos' : 'neg'; }
+function aujourdhui() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+function dateCourte(iso) { const [, m, d] = iso.split('-'); return `${d}/${m}`; }
+function dateLongue(iso) { const [y, m, d] = iso.split('-'); return `${d}/${m}/${y}`; }
+function nombre(s) {
+  if (typeof s === 'number') return s;
+  const n = parseFloat(String(s ?? '').replace(/[\s€]/g, '').replace(',', '.'));
+  return Number.isFinite(n) ? n : NaN;
+}
+function enTexte(n) { return n == null || n === '' ? '' : String(n).replace('.', ','); }
+function arrondi(n, d) { const f = 10 ** d; return Math.round(n * f) / f; }
+
+// Valeur en vigueur à une date (listes triées de la plus récente à la plus ancienne)
+function valeurA(liste, date, champ) {
+  const v = liste.find(x => x.date_effet <= date) || liste[liste.length - 1];
+  return v ? Number(v[champ]) : 0;
+}
+function coutKmA(date) {
+  const d = S.data;
+  return valeurA(d.consommations, date, 'l_100km') * valeurA(d.prix, date, 'prix_litre') / 100;
+}
+function nomDe(id) { return S.calc?.users.get(id)?.nom ?? '?'; }
+function token() { return localStorage.getItem(CLE_TOKEN); }
+function moiId() {
+  const id = Number(localStorage.getItem(CLE_MOI));
+  return S.data?.utilisateurs.some(u => u.id === id) ? id : null;
+}
+function configOk() {
+  return CFG.SUPABASE_URL && CFG.SUPABASE_KEY
+    && !CFG.SUPABASE_URL.includes('COLLE_ICI') && !CFG.SUPABASE_KEY.includes('COLLE_ICI');
+}
+
+let minuteurToast;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(minuteurToast);
+  minuteurToast = setTimeout(() => t.classList.remove('visible'), 2800);
+}
+
+const ICONES = {
+  accueil: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
+  historique: '<path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/>',
+  destinations: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  reglages: '<path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h4"/><path d="M12 12h8"/><circle cx="10" cy="12" r="2"/><path d="M4 18h12"/><circle cx="18" cy="18" r="2"/>',
+  fermer: '<path d="M6 6l12 12M18 6L6 18"/>',
+  pompe: '<path d="M4 20V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v15"/><path d="M3 20h12"/><path d="M14 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M7 8h4"/>'
+};
+function icone(nom, taille = 22, couleur = 'currentColor') {
+  return `<svg width="${taille}" height="${taille}" viewBox="0 0 24 24" fill="none" stroke="${couleur}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONES[nom]}</svg>`;
+}
+
+/* =====================================================================
+   COMMUNICATION AVEC SUPABASE
+   ===================================================================== */
+
+async function rpc(fonction, args = {}) {
+  const url = CFG.SUPABASE_URL.replace(/\/+$/, '') + '/rest/v1/rpc/' + fonction;
+  const headers = { 'Content-Type': 'application/json', apikey: CFG.SUPABASE_KEY };
+  if (CFG.SUPABASE_KEY.startsWith('eyJ')) headers.Authorization = 'Bearer ' + CFG.SUPABASE_KEY;
+
+  let reponse;
+  try {
+    reponse = await fetch(url, { method: 'POST', headers, body: JSON.stringify(args) });
+  } catch {
+    throw new Error('Pas de connexion. Vérifie ton réseau puis réessaie.');
+  }
+  const texte = await reponse.text();
+  let donnees = null;
+  try { donnees = texte ? JSON.parse(texte) : null; } catch { donnees = texte; }
+
+  if (!reponse.ok) {
+    const message = (donnees && donnees.message) || `Erreur ${reponse.status}`;
+    if (message.includes('SESSION_INVALIDE')) {
+      deconnecter();
+      throw new Error('Entre à nouveau le code PIN.');
+    }
+    throw new Error(message);
+  }
+  return donnees;
+}
+
+async function charger({ silencieux = false } = {}) {
+  if (!configOk() || !token()) return render();
+  try {
+    const d = await rpc('etat', { p_token: token() });
+    const signature = JSON.stringify(d);
+    if (signature === S.signature && S.data) return;
+    S.signature = signature;
+    S.data = d;
+    S.calc = calculer(d);
+    render();
+  } catch (e) {
+    if (!silencieux) toast(e.message);
+    if (!S.data) render();
+  }
+}
+
+function deconnecter() {
+  localStorage.removeItem(CLE_TOKEN);
+  S.data = null; S.calc = null; S.signature = ''; S.form = null;
+  render(); renderFeuille();
+}
+
+// Exécute une modification, recharge les données, affiche un message
+async function executer(operation, message) {
+  if (S.busy) return;
+  S.busy = true; renderFeuille();
+  try {
+    const resultat = await operation();
+    S.form = null;
+    S.signature = '';
+    await charger();
+    toast(typeof message === 'function' ? message(resultat) : message);
+  } catch (e) {
+    toast(e.message);
+  } finally {
+    S.busy = false;
+    renderFeuille();
+  }
+}
+
+/* =====================================================================
+   LOGIQUE FINANCIÈRE
+   solde = pleins payés − coût de ses trajets (coût partagé à parts égales)
+   ===================================================================== */
+
+function calculer(d) {
+  const users = new Map(d.utilisateurs.map(u => [u.id, u]));
+  const solde = {}, kmTotal = {}, kmMois = {};
+  d.utilisateurs.forEach(u => { solde[u.id] = 0; kmTotal[u.id] = 0; kmMois[u.id] = 0; });
+  const mois = aujourdhui().slice(0, 7);
+
+  // Pleins avant trajets le même jour, puis ordre de saisie
+  const evenements = [
+    ...d.pleins.map(p => ({ type: 'plein', date: p.date, rang: 0, id: p.id, obj: p })),
+    ...d.trajets.map(t => ({ type: 'trajet', date: t.date, rang: 1, id: t.id, obj: t }))
+  ].sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.rang - b.rang || a.id - b.id));
+
+  const chrono = [];
+  let dernierPayeur = null;
+
+  for (const e of evenements) {
+    const concernes = [];
+    if (e.type === 'plein') {
+      solde[e.obj.payeur_id] += Number(e.obj.montant);
+      concernes.push(e.obj.payeur_id);
+      dernierPayeur = e.obj.payeur_id;
+    } else {
+      const t = e.obj;
+      const n = t.participants.length || 1;
+      const part = Number(t.cout) / n;
+      const kmPart = Number(t.distance_km) / n;
+      for (const id of t.participants) {
+        solde[id] -= part;
+        kmTotal[id] += kmPart;
+        if (t.date.startsWith(mois)) kmMois[id] += kmPart;
+        concernes.push(id);
+      }
+    }
+    chrono.push({ ...e, concernes, apres: { ...solde } });
+  }
+
+  // Classement des soldes
+  const classement = d.utilisateurs
+    .filter(u => u.actif || Math.abs(solde[u.id]) >= EPS)
+    .map(u => ({ id: u.id, nom: u.nom, solde: solde[u.id] }))
+    .sort((a, b) => b.solde - a.solde);
+
+  // Qui doit à qui : les soldes négatifs sont répartis vers les positifs
+  const crediteurs = classement.filter(x => x.solde >= EPS).map(x => ({ ...x, reste: x.solde }));
+  const debiteurs = classement.filter(x => x.solde <= -EPS).map(x => ({ ...x, reste: -x.solde }));
+  const dettes = [];
+  while (true) {
+    const db = debiteurs.filter(x => x.reste >= EPS).sort((a, b) => b.reste - a.reste)[0];
+    const cr = crediteurs.filter(x => x.reste >= EPS).sort((a, b) => b.reste - a.reste)[0];
+    if (!db || !cr) break;
+    const m = Math.min(db.reste, cr.reste);
+    dettes.push({ de: db.nom, a: cr.nom, montant: m });
+    db.reste -= m; cr.reste -= m;
+  }
+  const avances = crediteurs.filter(x => x.reste >= EPS).map(x => ({ nom: x.nom, montant: x.reste }));
+  const nonCouverts = debiteurs.filter(x => x.reste >= EPS).map(x => ({ nom: x.nom, montant: x.reste }));
+
+  // Prochain plein : solde le plus bas ; égalité → pas celui qui a payé le dernier plein
+  const actifs = d.utilisateurs.filter(u => u.actif);
+  let prochain = null;
+  if (actifs.length) {
+    const min = Math.min(...actifs.map(u => solde[u.id]));
+    let candidats = actifs.filter(u => solde[u.id] - min < EPS);
+    if (candidats.length > 1 && dernierPayeur != null) {
+      const autres = candidats.filter(u => u.id !== dernierPayeur);
+      if (autres.length) candidats = autres;
+    }
+    prochain = candidats[0];
+  }
+
+  return { users, solde, kmTotal, kmMois, chrono, classement, dettes, avances, nonCouverts, prochain };
+}
+
+/* =====================================================================
+   AFFICHAGE
+   ===================================================================== */
+
+function render() {
+  const app = document.getElementById('app');
+  if (!configOk()) { app.innerHTML = ecranConfig(); return; }
+  if (!token()) { app.innerHTML = ecranPin(); return; }
+  if (!S.data) { app.innerHTML = '<div class="centre"><div class="rond" aria-label="Chargement"></div></div>'; return; }
+  if (!moiId()) { app.innerHTML = ecranChoixTelephone(); return; }
+
+  const vues = { accueil: vueAccueil, historique: vueHistorique, destinations: vueDestinations, reglages: vueReglages };
+  app.innerHTML = `<main class="page">${vues[S.onglet]()}</main>${barreNav()}`;
+}
+
+function ecranConfig() {
+  return `<div class="ecran">
+    <h1 class="grand-titre">Configuration manquante</h1>
+    <p class="muet">Ouvre le fichier <b>config.js</b> et colle l'URL et la clé publique de ton projet Supabase à la place des textes « COLLE_ICI… ».</p>
+  </div>`;
+}
+
+function ecranPin() {
+  return `<form class="ecran" id="form-pin">
+    <div>
+      <h1 class="grand-titre">Essence</h1>
+      <p class="muet">Entre le code PIN partagé. Ce téléphone s'en souviendra.</p>
+    </div>
+    <label class="etiquette" for="pin">Code PIN</label>
+    <input class="pin" id="pin" type="password" inputmode="numeric" autocomplete="current-password" required>
+    <div class="erreur" role="alert">${esc(S.erreurPin)}</div>
+    <button class="valider" type="submit" ${S.busy ? 'disabled' : ''}>Entrer</button>
+  </form>`;
+}
+
+function ecranChoixTelephone() {
+  const actifs = S.data.utilisateurs.filter(u => u.actif);
+  return `<div class="ecran">
+    <div>
+      <h1 class="grand-titre">À qui est ce téléphone ?</h1>
+      <p class="muet">Ton nom sera présélectionné quand tu ajoutes un trajet ou un plein. Modifiable dans Réglages.</p>
+    </div>
+    <div class="liste">
+      ${actifs.map(u => `<button class="gros" data-a="choisirMoi" data-id="${u.id}">${esc(u.nom)}</button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function barreNav() {
+  const onglets = [['accueil', 'Accueil'], ['historique', 'Historique'], ['destinations', 'Destinations'], ['reglages', 'Réglages']];
+  return `<nav class="barre-nav" aria-label="Navigation"><div>
+    ${onglets.map(([id, nom]) => `<button data-a="onglet" data-v="${id}" ${S.onglet === id ? 'aria-current="page"' : ''}>${icone(id)}<span>${nom}</span></button>`).join('')}
+  </div></nav>`;
+}
+
+function blocSituation() {
+  const c = S.calc;
+  const lignes = c.classement.map(x => `
+    <div class="ligne">
+      <span class="nom">${esc(x.nom)}</span>
+      <span class="montant chiffre ${classe(x.solde)}">${signe(x.solde)}</span>
+    </div>`).join('');
+
+  const phrases = [];
+  c.dettes.forEach(x => phrases.push(`<div class="phrase">${esc(x.de)} doit ${eur(x.montant)} à ${esc(x.a)}</div>`));
+  if (!c.dettes.length) phrases.push('<div class="phrase">Aucune dette</div>');
+  c.avances.forEach(x => phrases.push(`<div class="muet">${eur(x.montant)} avancés par ${esc(x.nom)}, pas encore consommés</div>`));
+  c.nonCouverts.forEach(x => phrases.push(`<div class="muet">${esc(x.nom)} a roulé pour ${eur(x.montant)} sans avance à rembourser : à compenser en payant un plein</div>`));
+
+  return `${lignes}<div class="separateur"></div>${phrases.join('')}`;
+}
+
+function vueAccueil() {
+  const c = S.calc, d = S.data;
+  const moi = nomDe(moiId());
+  const km = S.kmPeriode === 'mois' ? c.kmMois : c.kmTotal;
+  const personnes = d.utilisateurs.filter(u => u.actif || km[u.id] > 0);
+  const max = Math.max(1, ...personnes.map(u => km[u.id]));
+
+  return `
+    <div class="entete">
+      <div><small>Téléphone de ${esc(moi)}</small><h1 class="grand-titre">Essence</h1></div>
+      <small class="chiffre">${fmtCoutKm.format(coutKmA(aujourdhui()))} €/km</small>
+    </div>
+
+    <section class="carte" aria-label="Situation financière">
+      <h2 class="etiquette">Situation financière</h2>
+      ${blocSituation()}
+    </section>
+
+    <section class="carte-sombre">
+      <div><small>Prochain plein</small><strong>${esc(c.prochain?.nom ?? '—')}</strong></div>
+      ${icone('pompe', 30, '#F2B25C')}
+    </section>
+
+    <div class="actions">
+      <button class="gros vert" data-a="nouveauTrajet">+ Trajet</button>
+      <button class="gros" data-a="nouveauPlein">+ Plein</button>
+    </div>
+
+    <section class="carte">
+      <div class="ligne">
+        <h2 class="etiquette">Kilomètres</h2>
+        <div class="seg petit">
+          <button data-a="kmPeriode" data-v="mois" aria-pressed="${S.kmPeriode === 'mois'}">Ce mois</button>
+          <button data-a="kmPeriode" data-v="total" aria-pressed="${S.kmPeriode === 'total'}">Total</button>
+        </div>
+      </div>
+      <div class="barres">
+        ${personnes.map(u => `
+          <div class="barre">
+            <span>${esc(u.nom)}</span>
+            <div class="piste"><div class="rempli" style="width:${(km[u.id] / max * 100).toFixed(1)}%"></div></div>
+            <b class="chiffre">${fmtKm.format(km[u.id])} km</b>
+          </div>`).join('')}
+      </div>
+      <p class="muet" style="margin:0">Un trajet partagé compte pour une part égale à chacun.</p>
+    </section>`;
+}
+
+function vueHistorique() {
+  const sous = { chrono: listeChrono, trajets: listeTrajets, pleins: listePleins }[S.sous];
+  return `
+    <h1 class="grand-titre">Historique</h1>
+    <div class="seg">
+      <button data-a="sous" data-v="chrono" aria-pressed="${S.sous === 'chrono'}">Chronologie</button>
+      <button data-a="sous" data-v="trajets" aria-pressed="${S.sous === 'trajets'}">Trajets</button>
+      <button data-a="sous" data-v="pleins" aria-pressed="${S.sous === 'pleins'}">Pleins</button>
+    </div>
+    ${sous()}`;
+}
+
+function soldesApres(e) {
+  const ids = Object.keys(e.apres).map(Number)
+    .filter(id => e.concernes.includes(id) || Math.abs(e.apres[id]) >= EPS);
+  return `<div class="soldes chiffre">${ids.map(id => `<span class="${classe(e.apres[id])}">${esc(nomDe(id))} ${signe(e.apres[id])}</span>`).join('')}</div>`;
+}
+
+function listeChrono() {
+  const c = S.calc;
+  if (!c.chrono.length) return '<div class="vide">Rien pour l\'instant. Ajoute un trajet ou un plein depuis l\'accueil.</div>';
+  const cartes = [...c.chrono].reverse().map(e => {
+    if (e.type === 'plein') {
+      const p = e.obj;
+      return `<button class="element" data-a="modifierPlein" data-id="${p.id}">
+        <div class="haut"><span class="titre">${esc(nomDe(p.payeur_id))} paie un plein</span><span class="date">${dateCourte(p.date)}</span></div>
+        <div class="detail">Avance de ${eur(Number(p.montant))} : son solde augmente d'autant</div>
+        ${soldesApres(e)}
+      </button>`;
+    }
+    const t = e.obj;
+    const n = t.participants.length;
+    const noms = t.participants.map(nomDe).join(' et ');
+    const partage = n > 1 ? `, soit ${eur(Number(t.cout) / n)} chacun` : '';
+    return `<button class="element" data-a="modifierTrajet" data-id="${t.id}">
+      <div class="haut"><span class="titre">${esc(noms)} · ${esc(t.libelle)} · ${fmtKm.format(t.distance_km)} km</span><span class="date">${dateCourte(t.date)}</span></div>
+      <div class="detail">${fmtKm.format(t.distance_km)} km × ${fmtCoutKm.format(Number(t.cout) / Number(t.distance_km))} €/km = ${eur(Number(t.cout))} consommés${partage}</div>
+      ${soldesApres(e)}
+    </button>`;
+  }).join('');
+
+  const resume = c.dettes.length
+    ? c.dettes.map(x => `${esc(x.de)} doit ${eur(x.montant)} à ${esc(x.a)}`).join('<br>')
+    : 'Aucune dette';
+  return `<section class="carte-sombre"><div><small>Solde actuel</small><div class="phrase" style="margin-top:4px">${resume}</div></div></section>
+    <p class="muet" style="margin:0">Du plus récent au plus ancien. Touche une ligne pour la modifier.</p>
+    <div class="liste">${cartes}</div>`;
+}
+
+function listeTrajets() {
+  const t = [...S.data.trajets].reverse();
+  if (!t.length) return '<div class="vide">Aucun trajet enregistré.</div>';
+  return `<div class="liste">${t.map(x => `
+    <button class="element" data-a="modifierTrajet" data-id="${x.id}">
+      <div class="haut"><span class="titre">${esc(x.libelle)}${x.sens === 'aller' ? ' (aller)' : x.sens === 'aller_retour' ? ' (A/R)' : ''}</span><span class="date">${dateLongue(x.date)}</span></div>
+      <div class="detail">${esc(x.participants.map(nomDe).join(', '))} · ${fmtKm.format(x.distance_km)} km · <b>${eur(Number(x.cout))}</b></div>
+      <div class="muet">${fmtConso.format(x.l_100km)} L/100 km · ${fmtPrix.format(x.prix_litre)} €/L</div>
+    </button>`).join('')}</div>`;
+}
+
+function listePleins() {
+  const p = [...S.data.pleins].reverse();
+  if (!p.length) return '<div class="vide">Aucun plein enregistré.</div>';
+  return `<div class="liste">${p.map(x => `
+    <button class="element" data-a="modifierPlein" data-id="${x.id}">
+      <div class="haut"><span class="titre">${esc(nomDe(x.payeur_id))}</span><span class="date">${dateLongue(x.date)}</span></div>
+      <div class="detail"><b>${eur(Number(x.montant))}</b>${x.prix_litre ? ` · ${fmtPrix.format(x.prix_litre)} €/L` : ''}</div>
+    </button>`).join('')}</div>`;
+}
+
+function vueDestinations() {
+  const d = S.data.destinations;
+  return `
+    <h1 class="grand-titre">Destinations</h1>
+    <p class="muet" style="margin:0">Distance aller-retour. L'aller simple compte la moitié.</p>
+    <div class="liste">
+      ${d.length ? d.map(x => `
+        <button class="element" data-a="modifierDestination" data-id="${x.id}">
+          <div class="haut"><span class="titre">${esc(x.nom)}</span><span class="date chiffre">${fmtKm.format(x.distance_ar_km)} km A/R</span></div>
+          <div class="muet">Aller simple : ${fmtKm.format(x.distance_ar_km / 2)} km</div>
+        </button>`).join('') : '<div class="vide">Aucune destination. Ajoute celles où tu vas souvent.</div>'}
+      <button class="bouton-ligne" data-a="nouvelleDestination">+ Ajouter une destination</button>
+    </div>`;
+}
+
+function vueReglages() {
+  const d = S.data, auj = aujourdhui();
+  const conso = valeurA(d.consommations, auj, 'l_100km');
+  const prix = valeurA(d.prix, auj, 'prix_litre');
+  const actifs = d.utilisateurs.filter(u => u.actif);
+
+  return `
+    <h1 class="grand-titre">Réglages</h1>
+
+    <section class="carte">
+      <h2 class="etiquette">Voiture aujourd'hui</h2>
+      <div class="ligne"><span>Consommation</span><b class="chiffre">${fmtConso.format(conso)} L/100 km</b></div>
+      <div class="ligne"><span>Prix de l'essence</span><b class="chiffre">${fmtPrix.format(prix)} €/L</b></div>
+      <div class="separateur"></div>
+      <div class="ligne"><span>Coût calculé</span><b class="chiffre">${fmtCoutKm.format(conso * prix / 100)} €/km</b></div>
+    </section>
+
+    <div class="section-titre"><h2>Prix de l'essence</h2><button class="lien" data-a="nouveauPrix">+ Nouveau prix</button></div>
+    <div class="liste">${d.prix.map(x => `
+      <button class="element" data-a="modifierPrix" data-id="${x.id}">
+        <div class="haut"><span class="titre chiffre">${fmtPrix.format(x.prix_litre)} €/L</span><span class="date">dès le ${dateLongue(x.date_effet)}</span></div>
+      </button>`).join('')}</div>
+
+    <div class="section-titre"><h2>Consommation moyenne</h2><button class="lien" data-a="nouvelleConso">+ Nouvelle valeur</button></div>
+    <div class="liste">${d.consommations.map(x => `
+      <button class="element" data-a="modifierConso" data-id="${x.id}">
+        <div class="haut"><span class="titre chiffre">${fmtConso.format(x.l_100km)} L/100 km</span><span class="date">dès le ${dateLongue(x.date_effet)}</span></div>
+      </button>`).join('')}</div>
+
+    <div class="section-titre"><h2>Personnes</h2><button class="lien" data-a="nouvelUtilisateur">+ Ajouter</button></div>
+    <div class="liste">${d.utilisateurs.map(u => `
+      <button class="element" data-a="modifierUtilisateur" data-id="${u.id}">
+        <div class="haut"><span class="titre">${esc(u.nom)}</span><span class="date">${u.actif ? 'active' : 'désactivée'}</span></div>
+      </button>`).join('')}</div>
+
+    <div class="section-titre"><h2>Ce téléphone</h2></div>
+    <div class="champ">
+      <label class="etiquette" for="select-moi">Appartient à</label>
+      <select id="select-moi">
+        ${actifs.map(u => `<option value="${u.id}" ${u.id === moiId() ? 'selected' : ''}>${esc(u.nom)}</option>`).join('')}
+      </select>
+    </div>
+    <button class="bouton-ligne" data-a="ouvrirPin">Changer le code PIN</button>
+    <button class="lien danger" data-a="deconnexion">Déconnecter ce téléphone</button>`;
+}
+
+/* =====================================================================
+   FORMULAIRES (feuilles qui montent du bas)
+   ===================================================================== */
+
+function renderFeuille() {
+  const racine = document.getElementById('feuille');
+  const f = S.form;
+  if (!f) { racine.innerHTML = ''; document.body.style.overflow = ''; return; }
+  document.body.style.overflow = 'hidden';
+
+  const contenus = {
+    trajet: feuilleTrajet, plein: feuillePlein, destination: feuilleDestination,
+    utilisateur: feuilleUtilisateur, prix: feuillePrix, conso: feuilleConso, pin: feuillePin
+  };
+  const { titre, corps } = contenus[f.type](f);
+
+  // Mémorise le champ actif pour le remettre après redessin
+  const actif = document.activeElement?.dataset?.f;
+  racine.innerHTML = `
+    <div class="voile" data-a="fermer"></div>
+    <div class="feuille" role="dialog" aria-modal="true" aria-label="${esc(titre)}">
+      <div class="feuille-interieur">
+        <div class="poignee"></div>
+        <div class="feuille-entete">
+          <h2>${esc(titre)}</h2>
+          <button class="fermer" data-a="fermer" aria-label="Fermer">${icone('fermer', 20)}</button>
+        </div>
+        ${corps}
+      </div>
+    </div>`;
+  if (actif) racine.querySelector(`[data-f="${actif}"]`)?.focus();
+}
+
+function champ(etiquette, id, attributs) {
+  return `<div class="champ"><label class="etiquette" for="${id}">${etiquette}</label><input id="${id}" ${attributs}></div>`;
+}
+function boutonsBas(texteValider, actionValider, actionSupprimer, sombre = false) {
+  return `
+    <button class="valider ${sombre ? 'sombre' : ''}" data-a="${actionValider}" ${S.busy ? 'disabled' : ''}>${texteValider}</button>
+    ${actionSupprimer ? `<button class="lien danger" data-a="${actionSupprimer}" ${S.busy ? 'disabled' : ''}>Supprimer</button>` : ''}`;
+}
+
+/* ---------- Trajet ---------- */
+
+function distanceTrajet(f) {
+  if (f.destination === 'autre') return nombre(f.km);
+  const dest = S.data.destinations.find(x => x.id === f.destination);
+  if (!dest) return NaN;
+  return f.sens === 'aller' ? Number(dest.distance_ar_km) / 2 : Number(dest.distance_ar_km);
+}
+
+function apercuTrajet(f) {
+  const km = distanceTrajet(f);
+  const ck = coutKmA(f.date || aujourdhui());
+  if (!(km > 0) || !f.participants.length) {
+    return `<span class="calcul">${fmtCoutKm.format(ck)} €/km</span><span class="total">—</span>`;
+  }
+  const n = f.participants.length;
+  const cout = km * ck;
+  const partage = n > 1 ? ` ÷ ${n} = ${eur(cout / n)} chacun` : '';
+  return `<span class="calcul">${fmtKm.format(km)} km × ${fmtCoutKm.format(ck)} €/km${partage}</span><span class="total chiffre">${eur(cout)}</span>`;
+}
+
+function feuilleTrajet(f) {
+  const d = S.data;
+  const personnes = d.utilisateurs.filter(u => u.actif || f.participants.includes(u.id));
+  const dest = d.destinations.find(x => x.id === f.destination);
+
+  let partieSens = '';
+  if (dest) {
+    partieSens = `<div class="champ"><span class="etiquette">Sens</span>
+      <div class="seg">
+        <button data-a="sens" data-v="aller" aria-pressed="${f.sens === 'aller'}">Aller simple · ${fmtKm.format(dest.distance_ar_km / 2)} km</button>
+        <button data-a="sens" data-v="aller_retour" aria-pressed="${f.sens === 'aller_retour'}">Aller-retour · ${fmtKm.format(dest.distance_ar_km)} km</button>
+      </div></div>`;
+  } else if (f.destination === 'autre') {
+    partieSens = `<div class="deux">
+      ${champ('Nom du trajet', 'libelle', `data-f="libelle" type="text" maxlength="60" placeholder="Bruxelles" value="${esc(f.libelle)}"`)}
+      ${champ('Km au total', 'km', `data-f="km" type="text" inputmode="decimal" placeholder="220" value="${esc(f.km)}"`)}
+    </div>`;
+  }
+
+  const corps = `
+    <div class="champ"><span class="etiquette">Qui ? <span>(plusieurs possibles)</span></span>
+      <div class="puces">${personnes.map(u => `<button class="puce" data-a="participant" data-id="${u.id}" aria-pressed="${f.participants.includes(u.id)}">${esc(u.nom)}</button>`).join('')}</div>
+    </div>
+
+    <div class="champ"><span class="etiquette">Destination</span>
+      <div class="tuiles">
+        ${d.destinations.map(x => `<button class="tuile" data-a="destination" data-id="${x.id}" aria-pressed="${f.destination === x.id}"><b>${esc(x.nom)}</b><small>${fmtKm.format(x.distance_ar_km)} km A/R</small></button>`).join('')}
+        <button class="tuile autre" data-a="destination" data-id="autre" aria-pressed="${f.destination === 'autre'}">+ Autre trajet</button>
+      </div>
+    </div>
+
+    ${partieSens}
+
+    ${champ('Date', 'date-trajet', `data-f="date" type="date" value="${esc(f.date)}" max="${aujourdhui()}"`)}
+
+    <div class="apercu" id="apercu">${apercuTrajet(f)}</div>
+    ${boutonsBas(f.id ? 'Enregistrer les modifications' : 'Valider le trajet', 'validerTrajet', f.id ? 'supprimerTrajet' : null)}
+    ${f.id && f.destination === 'autre' ? '<button class="lien" data-a="versDestination">Transformer en destination régulière</button>' : ''}`;
+
+  return { titre: f.id ? 'Modifier le trajet' : 'Ajouter un trajet', corps };
+}
+
+/* ---------- Plein ---------- */
+
+function feuillePlein(f) {
+  const d = S.data;
+  const personnes = d.utilisateurs.filter(u => u.actif || u.id === f.payeur);
+  const prevu = S.calc.prochain?.id;
+  const prix = nombre(f.prix);
+
+  const corps = `
+    <div class="montant-geant">
+      <label class="etiquette" for="montant">Montant payé (€)</label>
+      <input id="montant" data-f="montant" type="text" inputmode="decimal" placeholder="0,00" value="${esc(f.montant)}">
+    </div>
+
+    <div class="champ"><span class="etiquette">Payé par</span>
+      <div class="puces">${personnes.map(u => `<button class="puce sombre" data-a="payeur" data-id="${u.id}" aria-pressed="${f.payeur === u.id}">${esc(u.nom)}${u.id === prevu && !f.id ? ' <small>· prévu</small>' : ''}</button>`).join('')}</div>
+    </div>
+
+    <div class="deux">
+      ${champ('Date', 'date-plein', `data-f="date" type="date" value="${esc(f.date)}" max="${aujourdhui()}"`)}
+      ${champ('Prix/L <span>(facultatif)</span>', 'prix-plein', `data-f="prix" type="text" inputmode="decimal" placeholder="${fmtPrix.format(valeurA(d.prix, f.date || aujourdhui(), 'prix_litre'))}" value="${esc(f.prix)}"`)}
+    </div>
+
+    <div class="info" id="info-prix" ${prix > 0 ? '' : 'hidden'}>Nouveau prix : ${prix > 0 ? fmtPrix.format(prix) : ''} €/L à partir du ${dateLongue(f.date || aujourdhui())}. Les trajets précédents gardent leur ancien prix.</div>
+
+    ${boutonsBas(f.id ? 'Enregistrer les modifications' : 'Valider le plein', 'validerPlein', f.id ? 'supprimerPlein' : null, true)}`;
+
+  return { titre: f.id ? 'Modifier le plein' : 'Ajouter un plein', corps };
+}
+
+/* ---------- Autres formulaires ---------- */
+
+function feuilleDestination(f) {
+  const corps = `
+    ${champ('Nom', 'nom-dest', `data-f="nom" type="text" maxlength="60" placeholder="Waremme" value="${esc(f.nom)}"`)}
+    ${champ('Distance aller-retour (km)', 'km-dest', `data-f="km" type="text" inputmode="decimal" placeholder="54" value="${esc(f.km)}"`)}
+    <p class="muet" style="margin:0">Modifier la distance ne change pas les trajets déjà enregistrés.</p>
+    ${boutonsBas('Enregistrer', 'validerDestination', f.id ? 'supprimerDestination' : null)}`;
+  return { titre: f.id ? 'Modifier la destination' : 'Nouvelle destination', corps };
+}
+
+function feuilleUtilisateur(f) {
+  const corps = `
+    ${champ('Prénom', 'nom-util', `data-f="nom" type="text" maxlength="40" value="${esc(f.nom)}"`)}
+    ${f.id ? `<label class="case"><input type="checkbox" data-f="actif" ${f.actif ? 'checked' : ''}> Active (apparaît dans les choix)</label>` : ''}
+    ${f.id ? '<p class="muet" style="margin:0">« Supprimer » désactive la personne si elle a déjà des trajets ou des pleins, pour garder les calculs justes.</p>' : ''}
+    ${boutonsBas('Enregistrer', 'validerUtilisateur', f.id ? 'supprimerUtilisateur' : null)}`;
+  return { titre: f.id ? 'Modifier la personne' : 'Nouvelle personne', corps };
+}
+
+function feuillePrix(f) {
+  const seul = S.data.prix.length <= 1;
+  const corps = `
+    <div class="deux">
+      ${champ('À partir du', 'date-prix', `data-f="date" type="date" value="${esc(f.date)}"`)}
+      ${champ('Prix (€/L)', 'val-prix', `data-f="valeur" type="text" inputmode="decimal" placeholder="1,70" value="${esc(f.valeur)}"`)}
+    </div>
+    <p class="muet" style="margin:0">Les trajets faits à partir de cette date utiliseront ce prix.</p>
+    ${boutonsBas('Enregistrer', 'validerPrix', f.id && !seul ? 'supprimerPrix' : null)}`;
+  return { titre: f.id ? 'Modifier le prix' : 'Nouveau prix', corps };
+}
+
+function feuilleConso(f) {
+  const seul = S.data.consommations.length <= 1;
+  const corps = `
+    <div class="deux">
+      ${champ('À partir du', 'date-conso', `data-f="date" type="date" value="${esc(f.date)}"`)}
+      ${champ('L/100 km', 'val-conso', `data-f="valeur" type="text" inputmode="decimal" placeholder="6,0" value="${esc(f.valeur)}"`)}
+    </div>
+    <p class="muet" style="margin:0">Les trajets faits à partir de cette date utiliseront cette consommation.</p>
+    ${boutonsBas('Enregistrer', 'validerConso', f.id && !seul ? 'supprimerConso' : null)}`;
+  return { titre: f.id ? 'Modifier la consommation' : 'Nouvelle consommation', corps };
+}
+
+function feuillePin(f) {
+  const corps = `
+    ${champ('Code actuel', 'pin-ancien', `data-f="ancien" type="password" inputmode="numeric" value="${esc(f.ancien)}"`)}
+    ${champ('Nouveau code (4 à 12 chiffres)', 'pin-nouveau', `data-f="nouveau" type="password" inputmode="numeric" value="${esc(f.nouveau)}"`)}
+    <p class="muet" style="margin:0">Les autres téléphones devront entrer le nouveau code.</p>
+    ${boutonsBas('Changer le code', 'validerPin', null, true)}`;
+  return { titre: 'Changer le code PIN', corps };
+}
+
+/* =====================================================================
+   ACTIONS (boutons)
+   ===================================================================== */
+
+const A = {
+  onglet: el => { S.onglet = el.dataset.v; render(); window.scrollTo(0, 0); },
+  sous: el => { S.sous = el.dataset.v; render(); },
+  kmPeriode: el => { S.kmPeriode = el.dataset.v; render(); },
+  choisirMoi: el => { localStorage.setItem(CLE_MOI, el.dataset.id); render(); },
+  fermer: () => { S.form = null; renderFeuille(); },
+  deconnexion: () => { if (confirm('Déconnecter ce téléphone ? Il faudra entrer le code PIN à nouveau.')) deconnecter(); },
+
+  // --- Trajets ---
+  nouveauTrajet: () => {
+    S.form = { type: 'trajet', id: null, participants: [moiId()], destination: null, sens: 'aller_retour', libelle: '', km: '', date: aujourdhui() };
+    renderFeuille();
+  },
+  modifierTrajet: el => {
+    const t = S.data.trajets.find(x => x.id === Number(el.dataset.id));
+    if (!t) return;
+    const regulier = t.destination_id != null && t.sens !== 'libre' && S.data.destinations.some(x => x.id === t.destination_id);
+    S.form = {
+      type: 'trajet', id: t.id, participants: [...t.participants],
+      destination: regulier ? t.destination_id : 'autre',
+      sens: regulier ? t.sens : 'aller_retour',
+      libelle: t.libelle, km: enTexte(t.distance_km), date: t.date
+    };
+    renderFeuille();
+  },
+  participant: el => {
+    const id = Number(el.dataset.id), p = S.form.participants;
+    S.form.participants = p.includes(id) ? p.filter(x => x !== id) : [...p, id];
+    renderFeuille();
+  },
+  destination: el => {
+    S.form.destination = el.dataset.id === 'autre' ? 'autre' : Number(el.dataset.id);
+    renderFeuille();
+  },
+  sens: el => { S.form.sens = el.dataset.v; renderFeuille(); },
+  validerTrajet: () => {
+    const f = S.form;
+    if (!f.participants.length) return toast('Choisis au moins une personne.');
+    if (!f.destination) return toast('Choisis une destination.');
+    const km = distanceTrajet(f);
+    if (!(km > 0)) return toast('Indique le nombre de km.');
+    let libelle, sens, destId;
+    if (f.destination === 'autre') {
+      libelle = (f.libelle || '').trim();
+      if (!libelle) return toast('Donne un nom au trajet.');
+      sens = 'libre'; destId = null;
+    } else {
+      const dest = S.data.destinations.find(x => x.id === f.destination);
+      libelle = dest.nom; sens = f.sens; destId = dest.id;
+    }
+    executer(() => rpc('enregistrer_trajet', {
+      p_token: token(), p_id: f.id, p_date: f.date || aujourdhui(),
+      p_destination_id: destId, p_libelle: libelle, p_sens: sens,
+      p_distance_km: arrondi(km, 2), p_participants: f.participants
+    }), f.id ? 'Trajet modifié' : 'Trajet enregistré');
+  },
+  supprimerTrajet: () => {
+    if (!confirm('Supprimer ce trajet ?')) return;
+    executer(() => rpc('supprimer_trajet', { p_token: token(), p_id: S.form.id }), 'Trajet supprimé');
+  },
+  versDestination: () => {
+    const f = S.form;
+    S.form = { type: 'destination', id: null, nom: f.libelle, km: f.km };
+    renderFeuille();
+    toast('Vérifie que la distance est bien celle de l\'aller-retour.');
+  },
+
+  // --- Pleins ---
+  nouveauPlein: () => {
+    S.form = { type: 'plein', id: null, montant: '', payeur: moiId(), date: aujourdhui(), prix: '' };
+    renderFeuille();
+  },
+  modifierPlein: el => {
+    const p = S.data.pleins.find(x => x.id === Number(el.dataset.id));
+    if (!p) return;
+    S.form = { type: 'plein', id: p.id, montant: enTexte(Number(p.montant).toFixed(2)), payeur: p.payeur_id, date: p.date, prix: enTexte(p.prix_litre) };
+    renderFeuille();
+  },
+  payeur: el => { S.form.payeur = Number(el.dataset.id); renderFeuille(); },
+  validerPlein: () => {
+    const f = S.form;
+    const montant = nombre(f.montant);
+    if (!(montant > 0)) return toast('Indique le montant du plein.');
+    if (!f.payeur) return toast('Choisis qui a payé.');
+    let prix = null;
+    if (String(f.prix).trim() !== '') {
+      prix = nombre(f.prix);
+      if (!(prix > 0 && prix < 10)) return toast('Le prix au litre semble incorrect.');
+    }
+    executer(() => rpc('enregistrer_plein', {
+      p_token: token(), p_id: f.id, p_date: f.date || aujourdhui(),
+      p_montant: arrondi(montant, 2), p_payeur_id: f.payeur,
+      p_prix_litre: prix == null ? null : arrondi(prix, 3)
+    }), f.id ? 'Plein modifié' : 'Plein enregistré');
+  },
+  supprimerPlein: () => {
+    if (!confirm('Supprimer ce plein ?')) return;
+    executer(() => rpc('supprimer_plein', { p_token: token(), p_id: S.form.id }), 'Plein supprimé');
+  },
+
+  // --- Destinations ---
+  nouvelleDestination: () => { S.form = { type: 'destination', id: null, nom: '', km: '' }; renderFeuille(); },
+  modifierDestination: el => {
+    const x = S.data.destinations.find(d => d.id === Number(el.dataset.id));
+    S.form = { type: 'destination', id: x.id, nom: x.nom, km: enTexte(x.distance_ar_km) };
+    renderFeuille();
+  },
+  validerDestination: () => {
+    const f = S.form, km = nombre(f.km);
+    if (!(f.nom || '').trim()) return toast('Donne un nom à la destination.');
+    if (!(km > 0)) return toast('Indique la distance aller-retour.');
+    executer(() => rpc('enregistrer_destination', { p_token: token(), p_id: f.id, p_nom: f.nom.trim(), p_distance_ar_km: arrondi(km, 2) }), 'Destination enregistrée');
+  },
+  supprimerDestination: () => {
+    if (!confirm('Supprimer cette destination ? Les trajets déjà faits sont conservés.')) return;
+    executer(() => rpc('supprimer_destination', { p_token: token(), p_id: S.form.id }), 'Destination supprimée');
+  },
+
+  // --- Personnes ---
+  nouvelUtilisateur: () => { S.form = { type: 'utilisateur', id: null, nom: '', actif: true }; renderFeuille(); },
+  modifierUtilisateur: el => {
+    const u = S.data.utilisateurs.find(x => x.id === Number(el.dataset.id));
+    S.form = { type: 'utilisateur', id: u.id, nom: u.nom, actif: u.actif };
+    renderFeuille();
+  },
+  validerUtilisateur: () => {
+    const f = S.form;
+    if (!(f.nom || '').trim()) return toast('Indique un prénom.');
+    executer(() => rpc('enregistrer_utilisateur', { p_token: token(), p_id: f.id, p_nom: f.nom.trim(), p_actif: f.actif }), 'Personne enregistrée');
+  },
+  supprimerUtilisateur: () => {
+    if (!confirm('Supprimer cette personne ?')) return;
+    executer(() => rpc('supprimer_utilisateur', { p_token: token(), p_id: S.form.id }),
+      r => r === 'supprime' ? 'Personne supprimée' : 'Personne désactivée (elle a un historique)');
+  },
+
+  // --- Prix et consommation ---
+  nouveauPrix: () => { S.form = { type: 'prix', id: null, date: aujourdhui(), valeur: '' }; renderFeuille(); },
+  modifierPrix: el => {
+    const x = S.data.prix.find(p => p.id === Number(el.dataset.id));
+    S.form = { type: 'prix', id: x.id, date: x.date_effet, valeur: enTexte(x.prix_litre) };
+    renderFeuille();
+  },
+  validerPrix: () => {
+    const f = S.form, v = nombre(f.valeur);
+    if (!f.date) return toast('Choisis une date.');
+    if (!(v > 0 && v < 10)) return toast('Le prix au litre semble incorrect.');
+    executer(() => rpc('enregistrer_prix', { p_token: token(), p_id: f.id, p_date: f.date, p_prix_litre: arrondi(v, 3) }), 'Prix enregistré');
+  },
+  supprimerPrix: () => {
+    if (!confirm('Supprimer ce prix ? Les trajets concernés seront recalculés avec le prix précédent.')) return;
+    executer(() => rpc('supprimer_prix', { p_token: token(), p_id: S.form.id }), 'Prix supprimé');
+  },
+  nouvelleConso: () => { S.form = { type: 'conso', id: null, date: aujourdhui(), valeur: '' }; renderFeuille(); },
+  modifierConso: el => {
+    const x = S.data.consommations.find(c => c.id === Number(el.dataset.id));
+    S.form = { type: 'conso', id: x.id, date: x.date_effet, valeur: enTexte(x.l_100km) };
+    renderFeuille();
+  },
+  validerConso: () => {
+    const f = S.form, v = nombre(f.valeur);
+    if (!f.date) return toast('Choisis une date.');
+    if (!(v > 0 && v < 50)) return toast('La consommation semble incorrecte.');
+    executer(() => rpc('enregistrer_conso', { p_token: token(), p_id: f.id, p_date: f.date, p_l_100km: arrondi(v, 2) }), 'Consommation enregistrée');
+  },
+  supprimerConso: () => {
+    if (!confirm('Supprimer cette valeur ? Les trajets concernés seront recalculés avec la valeur précédente.')) return;
+    executer(() => rpc('supprimer_conso', { p_token: token(), p_id: S.form.id }), 'Consommation supprimée');
+  },
+
+  // --- Code PIN ---
+  ouvrirPin: () => { S.form = { type: 'pin', ancien: '', nouveau: '' }; renderFeuille(); },
+  validerPin: () => {
+    const f = S.form;
+    executer(async () => {
+      const r = await rpc('changer_pin', { p_token: token(), p_ancien: f.ancien, p_nouveau: f.nouveau });
+      if (r.erreur) throw new Error(r.erreur);
+      localStorage.setItem(CLE_TOKEN, r.token);
+    }, 'Code PIN changé');
+  }
+};
+
+async function connexion(pin) {
+  if (S.busy) return;
+  S.busy = true; S.erreurPin = ''; render();
+  try {
+    const r = await rpc('connexion', { p_pin: pin });
+    if (r.erreur) { S.erreurPin = r.erreur; return; }
+    localStorage.setItem(CLE_TOKEN, r.token);
+    S.signature = '';
+  } catch (e) {
+    S.erreurPin = e.message;
+  } finally {
+    S.busy = false;
+    render();
+  }
+  if (token()) charger();
+}
+
+/* =====================================================================
+   ÉCOUTEURS
+   ===================================================================== */
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]');
+  if (!el || el.disabled) return;
+  e.preventDefault();
+  A[el.dataset.a]?.(el);
+});
+
+document.addEventListener('input', e => {
+  const champ = e.target.dataset.f;
+  if (!champ || !S.form) return;
+  S.form[champ] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+
+  // Mises à jour légères sans redessiner (le clavier reste ouvert)
+  if (S.form.type === 'trajet') {
+    const ap = document.getElementById('apercu');
+    if (ap) ap.innerHTML = apercuTrajet(S.form);
+  }
+  if (S.form.type === 'plein') {
+    const info = document.getElementById('info-prix');
+    const prix = nombre(S.form.prix);
+    if (info) {
+      info.hidden = !(prix > 0);
+      if (prix > 0) info.textContent = `Nouveau prix : ${fmtPrix.format(prix)} €/L à partir du ${dateLongue(S.form.date || aujourdhui())}. Les trajets précédents gardent leur ancien prix.`;
+    }
+  }
+});
+
+document.addEventListener('change', e => {
+  if (e.target.id === 'select-moi') {
+    localStorage.setItem(CLE_MOI, e.target.value);
+    toast('Téléphone attribué à ' + nomDe(Number(e.target.value)));
+    render();
+  }
+});
+
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  if (e.target.id === 'form-pin') connexion(document.getElementById('pin').value);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && S.form) { S.form = null; renderFeuille(); }
+});
+
+// Synchronisation entre téléphones
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') charger({ silencieux: true });
+});
+setInterval(() => {
+  if (document.visibilityState === 'visible') charger({ silencieux: true });
+}, RAFRAICHIR_MS);
+
+render();
+charger();
+</script>
+</body>
+</html>
